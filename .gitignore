@@ -10,3 +10,6 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 *.o
+bigInt435/p_q.txt
+bigInt435/e_n.txt
+bigInt435/d_n.txt

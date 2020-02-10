@@ -12,7 +12,7 @@
 
 bool isPrime(const BigUnsigned& number);
 BigUnsigned AssignBigInt();
-void sha256();
+void encrypt();
 
 int main(){
 	/* The library throws 'const char *' error messages when things go
@@ -122,9 +122,5 @@ BigUnsigned AssignBigInt(){
 		 n = n * 10 +rand();
 	}
 	return n;
-
-}
-
-void sha256(){
 
 }

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <fstream>
+#include "sha256.h"
 
 // 'BigIntegerLibrary.hh' includes all of the library headers.
 #include "BigIntegerLibrary.hh"
@@ -87,8 +88,10 @@ int main(){
 	sha256.open("file.txt");
 
 	sha256 << "Decrypted";
-	
 
+	std::string Message;
+	std::getline(sha256, Message);
+	std::cout << Message << std::endl;
 
 	} catch(char const* err) {
 		std::cout << "The library threw an exception:\n"

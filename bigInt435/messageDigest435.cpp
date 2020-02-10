@@ -1,67 +1,130 @@
-/***
-   prepared for CS435 Project 1 part 2
-**/
+// You need to complete this program for a part of your first project.
 
-#include <string.h>
+// Standard libraries
+#include <string>
 #include <iostream>
+#include <stdlib.h>
 #include <fstream>
 #include "sha256.h"
+
+// 'BigIntegerLibrary.hh' includes all of the library headers.
 #include "BigIntegerLibrary.hh"
 
- 
-int main(int argc, char *argv[])
-{
-   //demonstrating how sha256 works
-   std::string input = "testing";
-   std::string output1 = sha256(input);
-   std::cout << "sha256('"<< input << "'):" << output1 << "\n";
-   
-   //demo bigInt works here
-   BigUnsigned a = stringToBigUnsigned("124338907642982722929222542626327282");
-   BigUnsigned b = stringToBigUnsigned("124338907642977775546469426263278643");
-   std::cout << "big a = " <<a<<"\n";
-   std::cout << "big b = " <<b<<"\n";
-   std::cout << "big a*b = " <<a*b<<"\n";
+bool isPrime(const BigUnsigned& number);
+BigUnsigned AssignBigInt();
+void sha256();
 
-   //Second part of your project starts here
-   if (argc != 3 || (argv[1][0]!='s' && argv[1][0]!='v')) 
-      std::cout << "wrong format! should be \"a.exe s filename\"";
-   else {
-      std::string filename = argv[2];
-      
-            
-      //read the file
-      std::streampos begin,end;
-      std::ifstream myfile (filename.c_str(), std::ios::binary);
-      begin = myfile.tellg();
-      myfile.seekg (0, std::ios::end);
-      end = myfile.tellg();
-      std::streampos size = end-begin;
-      //std::cout << "size of the file: " << size << " bytes.\n"; //size of the file
-      
-      myfile.seekg (0, std::ios::beg);
-      char * memblock = new char[size];
-      myfile.read (memblock, size); //read file; it's saved in the char array memblock
-      myfile.close();
-      
-      std::string copyOFfile = filename+".Copy"; 
-      std::ofstream myfile2 (copyOFfile.c_str(), std::ios::binary);
-      myfile2.write (memblock, size); //write to a file
-      myfile2.close();
-      
-      //std::cout<<memblock;
-        
-      if (argv[1][0]=='s') {
-         std::cout << "\n"<<"Need to sign the doc.\n";
-         //.....
-         
-      }
-      else {
-         std::cout << "\n"<<"Need to verify the doc.\n";
-         //.....
-         
-      }
-      delete[] memblock;
-    }
-    return 0;
+int main(){
+	/* The library throws 'const char *' error messages when things go
+	 * wrong.  It's a good idea to catch them using a 'try' block like this
+	 * one.  Your C++ compiler might need a command-line option to compile
+	 * code that uses exceptions. */
+	try {
+
+	//Make random number by time
+	srand(time(NULL));
+
+	//get P prime
+	BigUnsigned P = BigUnsigned(1);
+	P = AssignBigInt();
+	while(!isPrime(P)){
+	  P = AssignBigInt();
+	}
+
+	//get Q prime
+	BigUnsigned Q = BigUnsigned(1);
+	Q = AssignBigInt();
+	while(!isPrime(P)){
+	  Q = AssignBigInt();
+	}
+
+	//get N
+	BigUnsigned N = (P - 1) * (Q - 1);
+
+	//get e
+	BigUnsigned E = AssignBigInt(), two = 2, remainder = E, q;
+	remainder.divideWithRemainder(two, q);
+	BigUnsigned gcdV = gcd(N, E);
+	// while the gcd is not 1 or the E is not negative
+	while ((gcdV != 1) || (remainder != 1)){
+	    E = AssignBigInt();
+	    remainder = E;
+	    remainder.divideWithRemainder(two, Q);
+	    gcdV = gcd(N, E);
+	}
+
+
+	//get D
+	BigUnsigned D = modinv(E, N);
+
+	//Open Files
+	std::ofstream PQ;
+	std::ofstream EN;
+	std::ofstream DN;
+
+	PQ.open("p_q.txt");
+	EN.open("e_n.txt");
+	DN.open("d_n.txt");
+
+	//Store Variables
+	PQ << P << std::endl;
+	PQ << Q << std::endl;
+
+	EN << E << std::endl;
+	EN << N << std::endl;
+
+	DN << D << std::endl;
+	DN << N << std::endl;
+
+	//Display Values
+	std::cout << "This is your P: \n" << P << std::endl;
+	std::cout << "This is your Q: \n" << Q << std::endl;
+	std::cout << "This is your E: \n" << E << std::endl;
+	std::cout << "This is your N: \n" << N << std::endl;
+	std::cout << "This is your D: \n" << D << std::endl;
+
+	/* MESSAGE ENCRYPTION */
+	std::fstream sha256File;
+	sha256File.open("file.txt");
+
+	std::string Message;
+	std::getline(sha256File, Message);
+	std::cout << "Before Encryption: " << Message << std::endl;
+
+	std::string shaHash = sha256(Message);
+
+	std::cout << "Sha256 Hash: " << shaHash << std::endl;
+
+	} catch(char const* err) {
+		std::cout << "The library threw an exception:\n"
+			<< err << std::endl;
+	}
+
+}
+
+bool isPrime(const BigUnsigned& number){
+	// the a value in Fermat's test - (a ^ ( p - 1)) % p
+    BigInteger a1 = 2;
+	BigInteger a2 = 3;
+
+    BigUnsigned Test1 = modexp(a1, (number - 1), number);
+    BigUnsigned Test2 = modexp(a2, (number - 1), number);
+
+    if ((Test1 == 1) && (Test2 == 1))
+        return true;
+    else
+        return false;
+}
+
+BigUnsigned AssignBigInt(){
+	BigUnsigned n = BigUnsigned(1);
+	while(n.bitLength() < 100){
+		 n = n * 10 +rand();
+	}
+	return n;
+
+}
+
+void sha256(){
+
 }

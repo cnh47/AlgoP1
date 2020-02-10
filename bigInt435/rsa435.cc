@@ -11,6 +11,7 @@
 
 bool isPrime(const BigUnsigned& number);
 BigUnsigned AssignBigInt();
+void sha256();
 
 int main(){
 	/* The library throws 'const char *' error messages when things go
@@ -74,13 +75,26 @@ int main(){
 	DN << D << std::endl;
 	DN << N << std::endl;
 
+	//Display Values
+	std::cout << "This is your P: \n" << P << std::endl;
+	std::cout << "This is your Q: \n" << Q << std::endl;
+	std::cout << "This is your E: \n" << E << std::endl;
+	std::cout << "This is your N: \n" << N << std::endl;
+	std::cout << "This is your D: \n" << D << std::endl;
+
+	/* MESSAGE ENCRYPTION */
+	std::ofstream sha256;
+	sha256.open("file.txt");
+
+	sha256 << "Decrypted";
+	
+
 
 	} catch(char const* err) {
 		std::cout << "The library threw an exception:\n"
 			<< err << std::endl;
 	}
 
-	return 0;
 }
 
 bool isPrime(const BigUnsigned& number){
@@ -103,5 +117,9 @@ BigUnsigned AssignBigInt(){
 		 n = n * 10 +rand();
 	}
 	return n;
+
+}
+
+void sha256(){
 
 }

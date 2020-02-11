@@ -5,14 +5,12 @@
 #include <iostream>
 #include <stdlib.h>
 #include <fstream>
-#include "sha256.h"
 
 // 'BigIntegerLibrary.hh' includes all of the library headers.
 #include "BigIntegerLibrary.hh"
 
 bool isPrime(const BigUnsigned& number);
 BigUnsigned AssignBigInt();
-void sha256();
 
 int main(){
 	/* The library throws 'const char *' error messages when things go
@@ -83,21 +81,13 @@ int main(){
 	std::cout << "This is your N: \n" << N << std::endl;
 	std::cout << "This is your D: \n" << D << std::endl;
 
-	/* MESSAGE ENCRYPTION */
-	std::ofstream sha256;
-	sha256.open("file.txt");
-
-	sha256 << "Decrypted";
-
-	std::string Message;
-	std::getline(sha256, Message);
-	std::cout << Message << std::endl;
 
 	} catch(char const* err) {
 		std::cout << "The library threw an exception:\n"
 			<< err << std::endl;
 	}
 
+	return 0;
 }
 
 bool isPrime(const BigUnsigned& number){
@@ -120,9 +110,5 @@ BigUnsigned AssignBigInt(){
 		 n = n * 10 +rand();
 	}
 	return n;
-
-}
-
-void sha256(){
 
 }
